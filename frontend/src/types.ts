@@ -1,6 +1,6 @@
 export type View =
   | 'dashboard' | 'inventory' | 'orders' | 'shipments'
-  | 'tickets' | 'approvals' | 'logs' | 'executions'
+  | 'tickets' | 'approvals' | 'logs' | 'executions' | 'analytics' | 'integrations' | 'logistics' | 'aitools'
 
 export interface Metrics {
   total_orders: number
@@ -24,3 +24,33 @@ export interface Approval { id: number; action_id: number; requested_by_agent: s
 export interface AuditLog { id: number; trace_id?: string; timestamp: string; actor: string; action: string; entity_type?: string; entity_id?: number; risk_level: string; result: string }
 export interface AgentExecution { id: number; trace_id: string; agent_name: string; trigger_event: string; status: string; execution_time_ms?: number; started_at: string; completed_at?: string }
 export interface ChatMessage { id: string; role: 'user' | 'agent'; content: string; agent?: string; ts: Date }
+
+// Analytics types
+export interface SalesTrendPoint { date: string; revenue: number; orders: number }
+export interface CategoryRevenue { category: string; revenue: number; units: number }
+export interface OrderStatusBreakdown { status: string; count: number }
+export interface TopProduct { id: number; name: string; category: string; sku: string; revenue: number; units_sold: number }
+export interface HeatmapCell { day: string; day_index: number; hour: number; revenue: number }
+export interface ForecastItem { product_id: number; name: string; sku: string; category: string; current_stock: number; reorder_threshold: number; sales_velocity_30d: number; forecast_days: number; forecasted_demand: number; days_of_stock: number; recommended_restock: number; risk_level: string }
+export interface KpiSummary { total_revenue: number; total_orders: number; avg_order_value: number; total_customers: number; this_month_revenue: number; last_month_revenue: number; revenue_growth_pct: number; this_month_orders: number; last_month_orders: number }
+
+// Integration types
+export interface IntegrationStatus { connected: boolean; shop?: string; host?: string; from?: string }
+export interface AllIntegrationStatus { shopify: IntegrationStatus; razorpay: IntegrationStatus; stripe: IntegrationStatus; whatsapp: IntegrationStatus; email: IntegrationStatus }
+export interface ShopifyProduct { id: string; title: string; vendor?: string; product_type?: string; status: string; variants_count: number }
+export interface ShopifyOrder { id: string; order_number: number; financial_status: string; fulfillment_status?: string; total_price: string; currency: string; created_at: string }
+export interface ShopifySync { source: string; synced_at: string; count: number; note?: string; products?: ShopifyProduct[]; orders?: ShopifyOrder[] }
+export interface PaymentStats { source: string; total_revenue: number; total_payments: number; captured: number; failed: number; refunded: number; success_rate: number; currency: string; methods?: Record<string, number>; note?: string; trend?: { date: string; revenue: number; count: number }[] }
+
+// Logistics types
+export interface TrackingEvent { timestamp: string; location: string; description: string }
+export interface TrackingResult { awb: string; source: string; carrier: string; status: string; estimated_delivery: string; events: TrackingEvent[]; note?: string; order_id?: number }
+export interface Vendor { id: number; name: string; contact: string; email: string; phone: string; category: string; lead_time_days: number; rating: number; active: boolean }
+export interface PurchaseOrder { id: number; vendor_id: number; vendor_name: string; product_name: string; sku: string; quantity: number; unit_cost: number; total_cost: number; status: string; created_at: string; expected_date: string; notes: string }
+export interface RestockSuggestion { product_id: number; product_name: string; sku: string; category: string; current_stock: number; reorder_threshold: number; suggested_qty: number; suggested_vendor: string; vendor_id: number; estimated_cost: number; urgency: string }
+
+// AI Tools types
+export interface SentimentResult { ticket_id: number; subject: string; sentiment: string; score: number; urgency: string; emotion: string; summary?: string; suggested_priority?: string }
+export interface BulkSentimentResponse { results: SentimentResult[]; summary: { total: number; sentiment_breakdown: Record<string, number>; critical_count: number; avg_score: number } }
+export interface ReportResponse { period: string; generated_at: string; metrics_snapshot: Record<string, number>; report: string }
+export interface DescriptionResponse { product_name: string; category: string; tone: string; generated_at: string; description: string; product_id?: number }

@@ -33,6 +33,34 @@ class Settings(BaseSettings):
     FORECAST_DAYS: int = 30
     LOW_STOCK_THRESHOLD_MULTIPLIER: float = 1.2
 
+    # Shopify Integration
+    SHOPIFY_SHOP_DOMAIN: str = ""
+    SHOPIFY_ACCESS_TOKEN: str = ""
+
+    # Razorpay Integration
+    RAZORPAY_KEY_ID: str = ""
+    RAZORPAY_KEY_SECRET: str = ""
+
+    # Stripe Integration
+    STRIPE_SECRET_KEY: str = ""
+
+    # Twilio WhatsApp
+    TWILIO_ACCOUNT_SID: str = ""
+    TWILIO_AUTH_TOKEN: str = ""
+    TWILIO_WHATSAPP_FROM: str = "whatsapp:+14155238886"
+
+    # Email / SMTP
+    SMTP_HOST: str = "smtp.gmail.com"
+    SMTP_PORT: int = 587
+    SMTP_USERNAME: str = ""
+    SMTP_PASSWORD: str = ""
+    SMTP_FROM_NAME: str = "ShopMind"
+    SMTP_FROM_EMAIL: str = ""
+
+    # Shiprocket (https://apiv2.shiprocket.in)
+    SHIPROCKET_EMAIL: str = ""
+    SHIPROCKET_PASSWORD: str = ""
+
     @property
     def allowed_origins_list(self) -> list[str]:
         return [o.strip() for o in self.ALLOWED_ORIGINS.split(",")]

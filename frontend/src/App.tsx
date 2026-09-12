@@ -2,6 +2,10 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import './index.css'
 import api, { getToken, setToken, clearToken } from './api'
 import type { View, Metrics, ChatMessage, Product, Inventory, Order, Shipment, Ticket, Approval, AuditLog, AgentExecution } from './types'
+import AnalyticsView from './AnalyticsView'
+import IntegrationsView from './IntegrationsView'
+import LogisticsView from './LogisticsView'
+import AIToolsView from './AIToolsView'
 
 // ─── SVG Icon helper ──────────────────────────────────────────────────────────
 function SvgIcon({ children, size = 16, className = '' }: { children: React.ReactNode; size?: number; className?: string }) {
@@ -31,6 +35,10 @@ const AlertIcon = () => <SvgIcon><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h1
 const ChevronRight = () => <SvgIcon><polyline points="9 18 15 12 9 6"/></SvgIcon>
 const RefreshIcon = () => <SvgIcon><polyline points="1 4 1 10 7 10"/><polyline points="23 20 23 14 17 14"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/></SvgIcon>
 const ZapIcon = () => <SvgIcon><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></SvgIcon>
+const BarChart2Icon = () => <SvgIcon><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></SvgIcon>
+const LinkIcon = () => <SvgIcon><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></SvgIcon>
+const TruckFastIcon = () => <SvgIcon><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></SvgIcon>
+const SparkleIcon = () => <SvgIcon><path d="M12 2L9.5 9.5 2 12l7.5 2.5L12 22l2.5-7.5L22 12l-7.5-2.5z"/></SvgIcon>
 function LoaderIcon({ className = '' }: { className?: string }) {
   return <SvgIcon className={className}><path d="M21 12a9 9 0 1 1-6.219-8.56"/></SvgIcon>
 }
@@ -156,6 +164,10 @@ function LoginPage({ onLogin }: { onLogin: (token: string, role: string, name: s
 function Sidebar({ view, setView, role, pendingCount }: { view: View; setView: (v: View) => void; role: string; pendingCount: number }) {
   const ALL_LINKS: { id: View; label: string; icon: React.ReactNode; badge?: number }[] = [
     { id: 'dashboard', label: 'Dashboard', icon: <Dashboard /> },
+    { id: 'analytics', label: 'Analytics', icon: <BarChart2Icon /> },
+    { id: 'integrations', label: 'Integrations', icon: <LinkIcon /> },
+    { id: 'logistics', label: 'Logistics & Supply', icon: <TruckFastIcon /> },
+    { id: 'aitools', label: 'AI Enhancements', icon: <SparkleIcon /> },
     { id: 'inventory', label: 'Inventory', icon: <PackageIcon /> },
     { id: 'orders', label: 'Orders', icon: <CartIcon /> },
     { id: 'shipments', label: 'Shipments', icon: <TruckIcon /> },
@@ -167,10 +179,10 @@ function Sidebar({ view, setView, role, pendingCount }: { view: View; setView: (
 
   const ROLE_LINKS: Record<string, View[]> = {
     CUSTOMER: ['dashboard', 'orders', 'tickets'],
-    ANALYST: ['dashboard', 'orders', 'shipments', 'executions'],
+    ANALYST: ['dashboard', 'analytics', 'orders', 'shipments', 'executions'],
     CUSTOMER_SUPPORT: ['dashboard', 'orders', 'tickets', 'shipments'],
-    OPS_MANAGER: ['dashboard', 'inventory', 'orders', 'shipments', 'tickets', 'approvals', 'executions'],
-    ADMIN: ['dashboard', 'inventory', 'orders', 'shipments', 'tickets', 'approvals', 'executions', 'logs'],
+    OPS_MANAGER: ['dashboard', 'analytics', 'integrations', 'logistics', 'inventory', 'orders', 'shipments', 'tickets', 'approvals', 'executions'],
+    ADMIN: ['dashboard', 'analytics', 'integrations', 'logistics', 'aitools', 'inventory', 'orders', 'shipments', 'tickets', 'approvals', 'executions', 'logs'],
   }
 
   const allowed = ROLE_LINKS[role] || ALL_LINKS.map(l => l.id)
@@ -587,7 +599,7 @@ function AuditLogsView() {
 
 // ─── TopBar ───────────────────────────────────────────────────────────────────
 function TopBar({ view, role, fullName, onLogout, onRefresh }: { view: View; role: string; fullName: string; onLogout: () => void; onRefresh: () => void }) {
-  const titles: Record<View, string> = { dashboard: 'Dashboard', inventory: 'Inventory', orders: 'Orders', shipments: 'Shipments', tickets: 'Support Tickets', approvals: 'Approvals', executions: 'Agent Executions', logs: 'Audit Logs' }
+  const titles: Record<View, string> = { dashboard: 'Dashboard', analytics: 'Analytics & Reporting', integrations: 'Integrations', logistics: 'Logistics & Supply Chain', aitools: 'AI Enhancements', inventory: 'Inventory', orders: 'Orders', shipments: 'Shipments', tickets: 'Support Tickets', approvals: 'Approvals', executions: 'Agent Executions', logs: 'Audit Logs' }
   const initials = fullName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'US'
   return (
     <header className="topbar">
@@ -640,8 +652,12 @@ export default function App() {
         <TopBar view={view} role={role} fullName={fullName} onLogout={handleLogout} onRefresh={loadMetrics} />
         <div className="content-split">
           <main className="page-area">
-            {view === 'dashboard'  && <DashboardView metrics={metrics} role={role} />}
-            {view === 'inventory'  && <InventoryView />}
+            {view === 'dashboard'    && <DashboardView metrics={metrics} role={role} />}
+            {view === 'analytics'    && <AnalyticsView />}
+            {view === 'integrations' && <IntegrationsView />}
+            {view === 'logistics'    && <LogisticsView />}
+            {view === 'aitools'      && <AIToolsView />}
+            {view === 'inventory'    && <InventoryView />}
             {view === 'orders'     && <OrdersView />}
             {view === 'shipments'  && <ShipmentsView />}
             {view === 'tickets'    && <TicketsView />}

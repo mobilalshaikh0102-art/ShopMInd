@@ -43,6 +43,49 @@ export const api = {
   listAuditLogs: (limit = 50) => apiFetch(`/audit/logs?limit=${limit}`),
   chat: (message: string, sessionId?: string) =>
     apiFetch('/agents/chat', { method: 'POST', body: JSON.stringify({ message, session_id: sessionId }) }),
+
+  // Analytics
+  analyticsSalesTrend: (days = 30) => apiFetch(`/analytics/sales-trend?days=${days}`),
+  analyticsRevenueByCategory: () => apiFetch('/analytics/revenue-by-category'),
+  analyticsOrderStatusBreakdown: () => apiFetch('/analytics/order-status-breakdown'),
+  analyticsTopProducts: (limit = 10) => apiFetch(`/analytics/top-products?limit=${limit}`),
+  analyticsRevenueHeatmap: () => apiFetch('/analytics/revenue-heatmap'),
+  analyticsDemandForecast: () => apiFetch('/analytics/demand-forecast-summary'),
+  analyticsKpiSummary: () => apiFetch('/analytics/kpi-summary'),
+
+  // Integrations
+  integrationsStatus: () => apiFetch('/integrations/status'),
+  shopifyProducts: () => apiFetch('/integrations/shopify/products'),
+  shopifyOrders: () => apiFetch('/integrations/shopify/orders'),
+  razorpayStats: () => apiFetch('/integrations/payments/razorpay'),
+  stripeStats: () => apiFetch('/integrations/payments/stripe'),
+  whatsappSend: (to: string, message: string) =>
+    apiFetch('/integrations/whatsapp/send', { method: 'POST', body: JSON.stringify({ to, message }) }),
+  whatsappOrderUpdate: (phone: string, order_number: string, status: string) =>
+    apiFetch('/integrations/whatsapp/order-update', { method: 'POST', body: JSON.stringify({ phone, order_number, status }) }),
+  emailSend: (to: string, subject: string, body: string) =>
+    apiFetch('/integrations/email/send', { method: 'POST', body: JSON.stringify({ to, subject, body }) }),
+  emailTicketReply: (customer_email: string, ticket_subject: string, reply_body: string) =>
+    apiFetch('/integrations/email/ticket-reply', { method: 'POST', body: JSON.stringify({ customer_email, ticket_subject, reply_body }) }),
+
+  // Logistics
+  trackShipment: (awb: string) => apiFetch(`/logistics/track/${awb}`),
+  trackByOrder: (orderId: number) => apiFetch(`/logistics/track-by-order/${orderId}`),
+  listVendors: () => apiFetch('/logistics/vendors'),
+  createVendor: (data: any) => apiFetch('/logistics/vendors', { method: 'POST', body: JSON.stringify(data) }),
+  deleteVendor: (id: number) => apiFetch(`/logistics/vendors/${id}`, { method: 'DELETE' }),
+  listPurchaseOrders: () => apiFetch('/logistics/purchase-orders'),
+  createPurchaseOrder: (data: any) => apiFetch('/logistics/purchase-orders', { method: 'POST', body: JSON.stringify(data) }),
+  updatePOStatus: (id: number, status: string) => apiFetch(`/logistics/purchase-orders/${id}/status`, { method: 'PATCH', body: JSON.stringify({ status }) }),
+  deletePO: (id: number) => apiFetch(`/logistics/purchase-orders/${id}`, { method: 'DELETE' }),
+  restockSuggestions: () => apiFetch('/logistics/restock-suggestions'),
+
+  // AI Tools
+  generateReport: (period: string, focus?: string) => apiFetch('/ai-tools/report', { method: 'POST', body: JSON.stringify({ period, focus }) }),
+  analyzeTicketSentiment: (ticketId: number) => apiFetch(`/ai-tools/sentiment/${ticketId}`, { method: 'POST' }),
+  bulkSentiment: () => apiFetch('/ai-tools/bulk-sentiment', { method: 'POST' }),
+  generateDescription: (data: any) => apiFetch('/ai-tools/generate-description', { method: 'POST', body: JSON.stringify(data) }),
+  generateDescriptionFromDB: (productId: number) => apiFetch(`/ai-tools/generate-description/${productId}`, { method: 'POST' }),
 }
 
 export default api
