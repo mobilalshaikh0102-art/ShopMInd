@@ -86,6 +86,32 @@ export const api = {
   bulkSentiment: () => apiFetch('/ai-tools/bulk-sentiment', { method: 'POST' }),
   generateDescription: (data: any) => apiFetch('/ai-tools/generate-description', { method: 'POST', body: JSON.stringify(data) }),
   generateDescriptionFromDB: (productId: number) => apiFetch(`/ai-tools/generate-description/${productId}`, { method: 'POST' }),
+
+  // CRM
+  crmOverview: () => apiFetch('/crm/overview'),
+  crmSegments: () => apiFetch('/crm/segments'),
+  crmCustomers: (params?: { search?: string; segment?: string; page?: number }) => {
+    const q = new URLSearchParams()
+    if (params?.search) q.set('search', params.search)
+    if (params?.segment && params.segment !== 'ALL') q.set('segment', params.segment)
+    if (params?.page) q.set('page', String(params.page))
+    return apiFetch(`/crm/customers?${q.toString()}`)
+  },
+  crmCustomerProfile: (id: number) => apiFetch(`/crm/customers/${id}`),
+  crmAddNote: (id: number, text: string) => apiFetch(`/crm/customers/${id}/notes`, { method: 'POST', body: JSON.stringify({ text }) }),
+
+  // Security
+  securitySessions: () => apiFetch('/security/sessions'),
+  securityRevokeSession: (jti: string) => apiFetch(`/security/sessions/${jti}`, { method: 'DELETE' }),
+  securityRevokeAll: () => apiFetch('/security/sessions', { method: 'DELETE' }),
+  securityChangePassword: (current_password: string, new_password: string) =>
+    apiFetch('/security/change-password', { method: 'POST', body: JSON.stringify({ current_password, new_password }) }),
+  securityAuditEvents: (event_type?: string) => apiFetch(`/security/audit-events${event_type ? `?event_type=${event_type}` : ''}`),
+  securityExportData: () => apiFetch('/security/export-data'),
+  securityListUsers: () => apiFetch('/security/users'),
+  securityCreateUser: (data: any) => apiFetch('/security/users', { method: 'POST', body: JSON.stringify(data) }),
+  securityUpdateUserStatus: (id: number, is_active: boolean) =>
+    apiFetch(`/security/users/${id}/status`, { method: 'PATCH', body: JSON.stringify({ is_active }) }),
 }
 
 export default api

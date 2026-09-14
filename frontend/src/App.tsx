@@ -6,6 +6,8 @@ import AnalyticsView from './AnalyticsView'
 import IntegrationsView from './IntegrationsView'
 import LogisticsView from './LogisticsView'
 import AIToolsView from './AIToolsView'
+import CRMView from './CRMView'
+import SecurityView from './SecurityView'
 
 // ─── SVG Icon helper ──────────────────────────────────────────────────────────
 function SvgIcon({ children, size = 16, className = '' }: { children: React.ReactNode; size?: number; className?: string }) {
@@ -39,6 +41,8 @@ const BarChart2Icon = () => <SvgIcon><line x1="18" y1="20" x2="18" y2="10"/><lin
 const LinkIcon = () => <SvgIcon><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></SvgIcon>
 const TruckFastIcon = () => <SvgIcon><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></SvgIcon>
 const SparkleIcon = () => <SvgIcon><path d="M12 2L9.5 9.5 2 12l7.5 2.5L12 22l2.5-7.5L22 12l-7.5-2.5z"/></SvgIcon>
+const UsersIcon = () => <SvgIcon><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></SvgIcon>
+const LockIcon = () => <SvgIcon><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></SvgIcon>
 function LoaderIcon({ className = '' }: { className?: string }) {
   return <SvgIcon className={className}><path d="M21 12a9 9 0 1 1-6.219-8.56"/></SvgIcon>
 }
@@ -165,6 +169,7 @@ function Sidebar({ view, setView, role, pendingCount }: { view: View; setView: (
   const ALL_LINKS: { id: View; label: string; icon: React.ReactNode; badge?: number }[] = [
     { id: 'dashboard', label: 'Dashboard', icon: <Dashboard /> },
     { id: 'analytics', label: 'Analytics', icon: <BarChart2Icon /> },
+    { id: 'crm', label: 'Customer CRM', icon: <UsersIcon /> },
     { id: 'integrations', label: 'Integrations', icon: <LinkIcon /> },
     { id: 'logistics', label: 'Logistics & Supply', icon: <TruckFastIcon /> },
     { id: 'aitools', label: 'AI Enhancements', icon: <SparkleIcon /> },
@@ -174,15 +179,16 @@ function Sidebar({ view, setView, role, pendingCount }: { view: View; setView: (
     { id: 'tickets', label: 'Support Tickets', icon: <TicketIcon /> },
     { id: 'approvals', label: 'Approvals', icon: <ShieldIcon />, badge: pendingCount },
     { id: 'executions', label: 'Agent Executions', icon: <BotIcon /> },
+    { id: 'security', label: 'Security', icon: <LockIcon /> },
     { id: 'logs', label: 'Audit Logs', icon: <ScrollIcon /> },
   ]
 
   const ROLE_LINKS: Record<string, View[]> = {
-    CUSTOMER: ['dashboard', 'orders', 'tickets'],
-    ANALYST: ['dashboard', 'analytics', 'orders', 'shipments', 'executions'],
-    CUSTOMER_SUPPORT: ['dashboard', 'orders', 'tickets', 'shipments'],
-    OPS_MANAGER: ['dashboard', 'analytics', 'integrations', 'logistics', 'inventory', 'orders', 'shipments', 'tickets', 'approvals', 'executions'],
-    ADMIN: ['dashboard', 'analytics', 'integrations', 'logistics', 'aitools', 'inventory', 'orders', 'shipments', 'tickets', 'approvals', 'executions', 'logs'],
+    CUSTOMER: ['dashboard', 'orders', 'tickets', 'security'],
+    ANALYST: ['dashboard', 'analytics', 'crm', 'orders', 'shipments', 'executions', 'security'],
+    CUSTOMER_SUPPORT: ['dashboard', 'crm', 'orders', 'tickets', 'shipments', 'security'],
+    OPS_MANAGER: ['dashboard', 'analytics', 'crm', 'integrations', 'logistics', 'inventory', 'orders', 'shipments', 'tickets', 'approvals', 'executions', 'security'],
+    ADMIN: ['dashboard', 'analytics', 'crm', 'integrations', 'logistics', 'aitools', 'inventory', 'orders', 'shipments', 'tickets', 'approvals', 'executions', 'security', 'logs'],
   }
 
   const allowed = ROLE_LINKS[role] || ALL_LINKS.map(l => l.id)
@@ -599,7 +605,7 @@ function AuditLogsView() {
 
 // ─── TopBar ───────────────────────────────────────────────────────────────────
 function TopBar({ view, role, fullName, onLogout, onRefresh }: { view: View; role: string; fullName: string; onLogout: () => void; onRefresh: () => void }) {
-  const titles: Record<View, string> = { dashboard: 'Dashboard', analytics: 'Analytics & Reporting', integrations: 'Integrations', logistics: 'Logistics & Supply Chain', aitools: 'AI Enhancements', inventory: 'Inventory', orders: 'Orders', shipments: 'Shipments', tickets: 'Support Tickets', approvals: 'Approvals', executions: 'Agent Executions', logs: 'Audit Logs' }
+  const titles: Record<View, string> = { dashboard: 'Dashboard', analytics: 'Analytics & Reporting', crm: 'Customer CRM', integrations: 'Integrations', logistics: 'Logistics & Supply Chain', aitools: 'AI Enhancements', inventory: 'Inventory', orders: 'Orders', shipments: 'Shipments', tickets: 'Support Tickets', approvals: 'Approvals', executions: 'Agent Executions', security: 'Security & Compliance', logs: 'Audit Logs' }
   const initials = fullName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'US'
   return (
     <header className="topbar">
@@ -654,6 +660,7 @@ export default function App() {
           <main className="page-area">
             {view === 'dashboard'    && <DashboardView metrics={metrics} role={role} />}
             {view === 'analytics'    && <AnalyticsView />}
+            {view === 'crm'          && <CRMView />}
             {view === 'integrations' && <IntegrationsView />}
             {view === 'logistics'    && <LogisticsView />}
             {view === 'aitools'      && <AIToolsView />}
@@ -663,6 +670,7 @@ export default function App() {
             {view === 'tickets'    && <TicketsView />}
             {view === 'approvals'  && <ApprovalsView onUpdate={loadMetrics} />}
             {view === 'executions' && <ExecutionsView />}
+            {view === 'security'   && <SecurityView />}
             {view === 'logs'       && <AuditLogsView />}
           </main>
           <CopilotPanel role={role} />

@@ -1,6 +1,6 @@
 export type View =
   | 'dashboard' | 'inventory' | 'orders' | 'shipments'
-  | 'tickets' | 'approvals' | 'logs' | 'executions' | 'analytics' | 'integrations' | 'logistics' | 'aitools'
+  | 'tickets' | 'approvals' | 'logs' | 'executions' | 'analytics' | 'integrations' | 'logistics' | 'aitools' | 'crm' | 'security'
 
 export interface Metrics {
   total_orders: number
@@ -54,3 +54,15 @@ export interface SentimentResult { ticket_id: number; subject: string; sentiment
 export interface BulkSentimentResponse { results: SentimentResult[]; summary: { total: number; sentiment_breakdown: Record<string, number>; critical_count: number; avg_score: number } }
 export interface ReportResponse { period: string; generated_at: string; metrics_snapshot: Record<string, number>; report: string }
 export interface DescriptionResponse { product_name: string; category: string; tone: string; generated_at: string; description: string; product_id?: number }
+
+// CRM types
+export interface CustomerRFM { recency_days: number | null; frequency: number; monetary: number; r_score: number; f_score: number; m_score: number; rfm_score: number; segment: string; churn_risk: string }
+export interface CustomerSummary { id: number; name: string; email: string; phone?: string; city?: string; country: string; created_at: string; order_count: number; lifetime_value: number; segment: string; churn_risk: string; rfm_score: number; recency_days: number | null; ticket_count: number; notes_count: number }
+export interface CustomerProfile { id: number; name: string; email: string; phone?: string; address?: string; city?: string; state?: string; country: string; pincode?: string; created_at: string; rfm: CustomerRFM; orders: { id: number; order_number: string; status: string; total: number; created_at: string }[]; tickets: { id: number; subject: string; status: string; priority: string; created_at: string }[]; notes: { id: number; text: string; author: string; created_at: string }[] }
+export interface CRMOverview { total_customers: number; total_revenue: number; avg_customer_lifetime_value: number; vip_count: number; at_risk_count: number; new_count: number; regular_count: number; open_tickets: number; repeat_purchase_rate: number }
+export interface SegmentCounts { ALL: number; VIP: number; REGULAR: number; AT_RISK: number; NEW: number }
+
+// Security types
+export interface SessionInfo { jti: string; user_id: number; email: string; full_name: string; ip: string; user_agent: string; created_at: string; last_active: string; is_current: boolean }
+export interface SecurityEvent { id: number; type: string; email: string; ip: string; ts: string; detail: string }
+export interface PlatformUser { id: number; email: string; full_name: string; role: string; is_active: boolean; created_at: string; last_login: string | null }
