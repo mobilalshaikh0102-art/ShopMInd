@@ -611,8 +611,8 @@ function TopBar({ view, role, fullName, onLogout, onRefresh }: { view: View; rol
     <header className="topbar">
       <div className="topbar-left"><ChevronRight /><span className="page-title">{titles[view]}</span></div>
       <div className="topbar-right">
-        <button className="icon-btn" onClick={onRefresh} title="Refresh"><RefreshIcon /></button>
-        <button className="icon-btn" title="Notifications"><BellIcon /></button>
+        <button className="icon-btn" onClick={() => { onRefresh(); alert('Dashboard metrics refreshed!'); }} title="Refresh"><RefreshIcon /></button>
+        <button className="icon-btn" onClick={() => alert('You have no new notifications.')} title="Notifications"><BellIcon /></button>
         <div className="user-chip">
           <div className="user-avatar">{initials}</div>
           <div className="user-info"><span className="user-name">{fullName || 'User'}</span><span className="user-role">{role}</span></div>
