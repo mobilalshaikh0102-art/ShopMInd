@@ -607,12 +607,22 @@ function AuditLogsView() {
 function TopBar({ view, role, fullName, onLogout, onRefresh }: { view: View; role: string; fullName: string; onLogout: () => void; onRefresh: () => void }) {
   const titles: Record<View, string> = { dashboard: 'Dashboard', analytics: 'Analytics & Reporting', crm: 'Customer CRM', integrations: 'Integrations', logistics: 'Logistics & Supply Chain', aitools: 'AI Enhancements', inventory: 'Inventory', orders: 'Orders', shipments: 'Shipments', tickets: 'Support Tickets', approvals: 'Approvals', executions: 'Agent Executions', security: 'Security & Compliance', logs: 'Audit Logs' }
   const initials = fullName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'US'
+  const [isRefreshing, setIsRefreshing] = useState(false)
+
+  const handleRefresh = () => {
+    setIsRefreshing(true)
+    onRefresh()
+    setTimeout(() => setIsRefreshing(false), 800)
+  }
+
   return (
     <header className="topbar">
       <div className="topbar-left"><ChevronRight /><span className="page-title">{titles[view]}</span></div>
       <div className="topbar-right">
-        <button className="icon-btn" onClick={() => { onRefresh(); alert('Dashboard metrics refreshed!'); }} title="Refresh"><RefreshIcon /></button>
-        <button className="icon-btn" onClick={() => alert('You have no new notifications.')} title="Notifications"><BellIcon /></button>
+        <button className="icon-btn" onClick={handleRefresh} title="Refresh">
+          <div className={isRefreshing ? 'spin' : ''} style={{ display: 'flex' }}><RefreshIcon /></div>
+        </button>
+        <button className="icon-btn" onClick={() => alert('No new notifications at this time.')} title="Notifications"><BellIcon /></button>
         <div className="user-chip">
           <div className="user-avatar">{initials}</div>
           <div className="user-info"><span className="user-name">{fullName || 'User'}</span><span className="user-role">{role}</span></div>
