@@ -4,6 +4,17 @@
 
 ---
 
+## 📑 Final Deliverables & Documentation
+
+As part of the final project submission, please review the following artifacts:
+1. **[Solution Architecture](file:///d:/ShopMind1/docs/architecture.md)** — High-level Mermaid diagrams and component breakdown.
+2. **[Database Schema](file:///d:/ShopMind1/docs/db_schema.md)** — SQLModel ER diagram and table structures.
+3. **[AWS Cost Estimate](file:///d:/ShopMind1/docs/aws_cost_estimate.md)** — Monthly estimated costs for Tier-1 (MVP) and Tier-2 (Production) deployments.
+4. **[Presentation Outline](file:///d:/ShopMind1/docs/presentation.md)** — Slide deck outline for the pitch.
+5. **[AWS EC2 Deployment Script](file:///d:/ShopMind1/scripts/deploy_aws_ec2.sh)** — A plug-and-play User Data script to spin up the entire Dockerized platform on a cloud instance.
+
+---
+
 ## 🚀 Quick Start (5 minutes)
 
 ### Prerequisites
