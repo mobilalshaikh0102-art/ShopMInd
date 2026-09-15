@@ -1,282 +1,136 @@
-# ShopMind — AI-Powered Autonomous E-Commerce Operations Platform
+<div align="center">
+  
+# 🧠 ShopMind
 
-> **A production-grade LangGraph multi-agent platform** that centralises all e-commerce operations behind an AI orchestrator with 7 specialised agents, RAG-powered customer support, ML demand forecasting, human approval workflows, and a premium real-time dashboard.
+**The Autonomous AI E-Commerce Operations Platform**
+
+[![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
+[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)](https://postgresql.org)
+[![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white)](https://redis.io/)
+[![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
+
+A production-grade, multi-agent AI platform built with **LangGraph** and **Google Gemini**. ShopMind centralises all e-commerce operations behind an intelligent orchestrator, featuring a premium dashboard, human-in-the-loop workflows, and real-time machine learning analytics.
+
+[Features](#features) • [Architecture](#architecture) • [Quick Start](#quick-start) • [Documentation](#documentation)
+
+</div>
 
 ---
 
-## 📑 Final Deliverables & Documentation
+## ✨ Features
 
-As part of the final project submission, please review the following artifacts:
-1. **[Solution Architecture](file:///d:/ShopMind1/docs/architecture.md)** — High-level Mermaid diagrams and component breakdown.
-2. **[Database Schema](file:///d:/ShopMind1/docs/db_schema.md)** — SQLModel ER diagram and table structures.
-3. **[AWS Cost Estimate](file:///d:/ShopMind1/docs/aws_cost_estimate.md)** — Monthly estimated costs for Tier-1 (MVP) and Tier-2 (Production) deployments.
-4. **[Presentation Outline](file:///d:/ShopMind1/docs/presentation.md)** — Slide deck outline for the pitch.
-5. **[AWS EC2 Deployment Script](file:///d:/ShopMind1/scripts/deploy_aws_ec2.sh)** — A plug-and-play User Data script to spin up the entire Dockerized platform on a cloud instance.
+- 🤖 **7-Agent AI Swarm (LangGraph):** Specialized AI agents handling everything from inventory optimization to customer support, orchestrated by a central Super Agent.
+- 💬 **Omnichannel AI Copilot:** A context-aware chatbot that acts as a customer support rep for users, and a data-driven business analyst for admins.
+- 🧠 **RAG-Powered Knowledge Base:** Instant answers powered by Retrieval-Augmented Generation using `pgvector`.
+- 📊 **Premium Live Dashboard:** A stunning React frontend with dynamic glassmorphic UI, real-time metrics, KPI cards, and animated micro-interactions.
+- 📈 **ML Demand Forecasting:** Scikit-learn powered time-series forecasting for predictive inventory management.
+- 🛡️ **Human-in-the-Loop (HITL):** High-stakes AI decisions (like expensive refunds or large supplier orders) are automatically paused for human approval.
+- ☁️ **Cloud Native:** Fully Dockerized with a 1-click AWS EC2 deployment script (`cloud-init`).
 
 ---
 
-## 🚀 Quick Start (5 minutes)
+## 🏗️ Architecture
+
+ShopMind is built on a modern, scalable tech stack:
+
+* **Frontend:** React 18, TypeScript, Vite, Vanilla CSS (Glassmorphism UI)
+* **Backend:** Python 3.11, FastAPI, SQLModel (SQLAlchemy)
+* **AI & ML:** LangGraph, Google Gemini Pro, Scikit-Learn, SentenceTransformers
+* **Database:** PostgreSQL (with `pgvector` for embeddings)
+* **Cache & Message Broker:** Redis
+* **Infrastructure:** Docker, Docker Compose, AWS EC2
+
+### System Flow
+```mermaid
+graph TD
+    A[React Dashboard / Copilot] -->|REST API & Chat| B(FastAPI Backend)
+    B --> C{LangGraph Orchestrator}
+    C -->|Route| D[Support Agent]
+    C -->|Route| E[Inventory Agent]
+    C -->|Route| F[Order Agent]
+    C -->|Route| G[Analytics Agent]
+    B <--> H[(PostgreSQL + pgvector)]
+    B <--> I[(Redis Cache)]
+```
+
+---
+
+## 🚀 Quick Start (Local Development)
+
+Get the platform running on your local machine in under 5 minutes.
 
 ### Prerequisites
-| Tool | Version | Notes |
-|---|---|---|
-| Python | 3.11+ | [python.org](https://python.org) |
-| Node.js | 18+ (v19 works) | [nodejs.org](https://nodejs.org) |
-| Docker Desktop | Latest | For PostgreSQL + Redis |
-| Google Gemini API Key | — | [aistudio.google.com/apikey](https://aistudio.google.com/apikey) |
+- Python 3.11+
+- Node.js 18+ 
+- Docker Desktop
+- [Google Gemini API Key](https://aistudio.google.com/apikey)
 
----
-
-### Step 1 — Start PostgreSQL + Redis
-
+### 1. Start the Databases
+Spin up PostgreSQL (with pgvector) and Redis using Docker Compose:
 ```bash
-docker-compose up -d
+docker-compose up -d postgres redis
 ```
 
-This starts:
-- `postgres:pgvector/pgvector` on port **5432**
-- `redis:7` on port **6379**
-
----
-
-### Step 2 — Configure Backend
-
+### 2. Configure the Backend
+Navigate to the backend directory, set up your environment, and start the API:
 ```bash
 cd backend
-copy .env.example .env
-```
+cp .env.example .env
 
-Open `backend\.env` and set your Gemini API key:
-```env
-GEMINI_API_KEY=your-actual-gemini-api-key-here
-```
-
----
-
-### Step 3 — Install Backend Dependencies
-
-```bash
-cd backend
+# Edit .env and add your GEMINI_API_KEY
+python -m venv .venv
+source .venv/bin/activate  # Or `.venv\Scripts\activate` on Windows
 pip install -r requirements.txt
+
+# Start the FastAPI server
+uvicorn app.main:app --reload
 ```
 
----
-
-### Step 4 — Start Backend Server
-
-```bash
-cd backend
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-```
-
-The backend auto-initialises:
-- ✅ Creates all database tables
-- ✅ Seeds 5 default user accounts (Admin, Ops, Analyst, Support, Customer)
-- ✅ Loads 6 RAG knowledge base documents with embeddings
-
----
-
-### Step 5 — Seed Demo Data (optional but recommended)
-
-In a new terminal:
-```bash
-cd backend
-python ..\scripts\seed_demo_data.py
-```
-
-Creates:
-- 20 products across 8 categories
-- 12 realistic customers
-- 35 orders with varied statuses
-- Shipments with delayed status examples
-- 15 support tickets
-- 20 agent execution records
-- 8 audit log entries
-
----
-
-### Step 6 — Start Frontend
-
+### 3. Launch the Frontend
+In a new terminal, start the React Vite server:
 ```bash
 cd frontend
-npm install   # first time only
+npm install
 npm run dev
 ```
 
----
-
-### Step 7 — Open the App
-
-| URL | Description |
-|---|---|
-| **http://localhost:5173** | ShopMind Dashboard |
-| http://localhost:8000/api/docs | FastAPI Swagger UI |
-| http://localhost:8000/api/redoc | ReDoc API reference |
+The stunning dashboard will be available at `http://localhost:5173`. 
+*Login with `admin@shopmind.ai` (Password: `password123`)*
 
 ---
 
-## 🔑 Demo Login Accounts
+## ☁️ Cloud Deployment (AWS EC2)
 
-| Role | Email | Password | Access |
-|---|---|---|---|
-| **Admin** | admin@shopmind.ai | Admin@123 | Full access — all modules |
-| **Ops Manager** | ops@shopmind.ai | Ops@1234 | Orders, inventory, approvals |
-| **Analyst** | analyst@shopmind.ai | Analyst@1 | Read-only analytics |
-| **Support Agent** | support@shopmind.ai | Support@1 | Tickets, orders, shipments |
-| **Customer** | customer@shopmind.ai | Customer@1 | Own orders and tickets only |
+ShopMind includes a production-ready, zero-touch deployment script for AWS EC2 instances running Ubuntu 24.04.
 
----
+1. Launch a new EC2 instance (e.g., `t3.medium`).
+2. Open port `80` (HTTP) in the Security Group.
+3. Paste the contents of [`scripts/deploy_aws_ec2.sh`](scripts/deploy_aws_ec2.sh) into the **User Data** section during launch.
+4. The server will automatically install Docker, clone the repo, build the images, and launch the platform on port 80.
 
-## 🤖 AI Agent System
-
-ShopMind uses a **LangGraph supervisor + 7 specialised agents** powered by **Google Gemini 2.0 Flash**:
-
-```
-USER QUERY
-    ↓
-Supervisor (Intent routing)
-    ↓
-┌─────────────────────────────────────────────┐
-│  Inventory  │  Order   │  Support  │ Pricing │
-│    Agent    │  Agent   │   Agent   │  Agent  │
-├─────────────┼──────────┼───────────┼─────────┤
-│  Logistics  │Marketing │ Analytics │         │
-│    Agent    │  Agent   │   Agent   │         │
-└─────────────────────────────────────────────┘
-    ↓
-HUMAN APPROVAL (for HIGH risk actions)
-    ↓
-AUDIT LOG
-```
-
-### Agent Routing Keywords
-- **Inventory Agent** — stock, inventory, restock, SKU, warehouse
-- **Order Agent** — order, purchase, cancel order, order status
-- **Logistics Agent** — shipment, delivery, shipping, tracking, delay
-- **Support Agent** — refund, return, policy, warranty, complaint
-- **Pricing Agent** — price, pricing, discount, cost, margin
-- **Analytics Agent** — sales, revenue, metrics, report, KPI
-- **Marketing Agent** — campaign, promotion, marketing, ad, email
-
-### Human Approval Workflow
-Actions flagged as **HIGH RISK** (e.g., restock cost > ₹5,000) are:
-1. Paused and written to the `approvals` table
-2. Shown in the **Approvals** dashboard tab with full context
-3. Executed or rejected by an authorised human
-
----
-
-## 📦 Architecture
-
-```
-d:\ShopMind1\
-├── backend/                    # FastAPI + LangGraph
-│   ├── app/
-│   │   ├── main.py             # FastAPI app + lifespan
-│   │   ├── core/               # Config, security, logging, Redis
-│   │   ├── models/             # 17 SQLModel tables (pgvector)
-│   │   ├── schemas/            # Pydantic request/response models
-│   │   ├── repositories/       # Data access layer
-│   │   ├── services/           # Business logic
-│   │   ├── api/v1/             # REST API routes
-│   │   ├── agents/             # LangGraph orchestrator + 7 agents
-│   │   ├── rag/                # Embedder, retriever, knowledge loader
-│   │   ├── ml/                 # Demand forecaster (LinearRegression + EMA)
-│   │   └── events/             # Redis pub/sub producer + consumer
-│   └── requirements.txt
-├── frontend/                   # React + TypeScript + Vite 3
-│   └── src/
-│       ├── App.tsx             # Full app (8 pages + AI Copilot)
-│       ├── api.ts              # API client
-│       ├── types.ts            # TypeScript interfaces
-│       └── index.css           # Premium dark-theme design system
-├── scripts/
-│   ├── seed_demo_data.py       # Rich demo data seeder
-│   └── start_dev.py            # Combined dev server launcher
-└── docker-compose.yml          # PostgreSQL (pgvector) + Redis
-```
-
----
-
-## 🎨 Frontend Features
-
-| Page | Description |
-|---|---|
-| **Dashboard** | KPI cards, agent activity feed, real-time metrics |
-| **Inventory** | Stock table with low-stock alerts and reorder info |
-| **Orders** | Order queue with status filter and revenue totals |
-| **Shipments** | Shipment tracker with delayed-only filter |
-| **Support Tickets** | Ticket queue with priority and status badges |
-| **Approvals** | HIGH-RISK action review with one-click approve/reject |
-| **Agent Executions** | Full history of AI agent runs with duration |
-| **Audit Logs** | Tamper-evident action log with risk levels |
-| **AI Copilot** | Live chat panel routed to the best agent automatically |
-
----
-
-## 🔧 Technology Stack
-
-| Layer | Technology |
-|---|---|
-| Backend Framework | FastAPI 0.115 |
-| ORM | SQLModel + SQLAlchemy |
-| Database | PostgreSQL 16 + pgvector |
-| Cache / Events | Redis 7 |
-| AI Agents | LangGraph 0.2 + LangChain |
-| LLM | Google Gemini 2.0 Flash |
-| Embeddings | Google text-embedding-004 (768-dim) |
-| ML Forecasting | scikit-learn LinearRegression |
-| Auth | JWT (python-jose + passlib bcrypt) |
-| Frontend | React 18 + TypeScript + Vite 3 |
-| Deployment | Docker Compose |
-
----
-
-## 🐳 Docker Commands
-
+To manually rebuild the cloud environment after code changes:
 ```bash
-# Start all services
-docker-compose up -d
-
-# Stop all services
-docker-compose down
-
-# Remove volumes (reset data)
-docker-compose down -v
-
-# Check logs
-docker-compose logs -f postgres
+sudo docker-compose up -d --build
 ```
 
 ---
 
-## 📡 Key API Endpoints
+## 📚 Documentation
 
-```
-POST   /api/v1/auth/login              Login
-POST   /api/v1/auth/register           Register
-GET    /api/v1/auth/me                 Current user
+Detailed documentation and architectural diagrams are available in the `/docs` folder:
 
-GET    /api/v1/dashboard/metrics       Dashboard KPIs
-GET    /api/v1/products                List products
-GET    /api/v1/inventory               All inventory
-GET    /api/v1/inventory/low-stock     Low stock items
-GET    /api/v1/orders                  List orders
-GET    /api/v1/shipments               All shipments
-GET    /api/v1/shipments/delayed       Delayed shipments
-GET    /api/v1/support/tickets         Support tickets
-GET    /api/v1/approvals/pending       Pending approvals
-POST   /api/v1/approvals/{id}/decide   Approve/reject
-GET    /api/v1/agents/executions       Agent run history
-GET    /api/v1/audit/logs              Audit trail
-POST   /api/v1/agents/chat             AI chat
-GET    /api/v1/forecast/{product_id}   Demand forecast
-```
+- 🏛️ **[Solution Architecture](docs/solution_architecture.md):** Complete component breakdown and data flow.
+- 🗄️ **[Database Schema](docs/db_schema.md):** ER diagrams and entity descriptions.
+- 💰 **[AWS Cost Estimate](docs/estimated_costing.md):** Projected run costs for MVP and Production scales.
+- 📖 **[User Manual](docs/project_documentation.md):** Detailed guide on using the ShopMind platform.
+- 📊 **[Pitch Deck Outline](docs/presentation_deck.md):** Recommended slides for project presentation.
 
 ---
 
-## ⚙️ Without Gemini API Key
+## 🤝 Contributing
+Contributions, issues, and feature requests are welcome! 
+Feel free to check the [issues page](../../issues).
 
-The platform works without a Gemini API key — the AI chat will return a friendly message asking you to configure the key. All other features (dashboard, inventory, orders, approvals, etc.) work fully.
-#   S h o p M I n d  
- 
+## 📄 License
+This project is licensed under the MIT License - see the LICENSE file for details.
