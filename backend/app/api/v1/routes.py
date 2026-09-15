@@ -301,7 +301,6 @@ def dashboard_metrics(db: Session = Depends(get_db), user: User = Depends(get_cu
     recent_executions = execution_repo.get_recent(db, limit=8)
 
     today_start = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
-    from datetime import timezone
     agent_actions_today = db.exec(
         select(func.count(AgentExecution.id)).where(
             AgentExecution.status == "COMPLETED",
