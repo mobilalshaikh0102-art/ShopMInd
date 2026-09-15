@@ -108,7 +108,7 @@ function SalesTrendChart({ data }: { data: SalesTrendPoint[] }) {
           <Tooltip
             contentStyle={{ background: '#1e1e2e', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', fontSize: '12px' }}
             labelStyle={{ color: '#a0aec0' }}
-            formatter={(v: number, name: string) => [name === 'revenue' ? fmt(v) : v, name === 'revenue' ? 'Revenue' : 'Orders']}
+            formatter={(v: any, name: any) => [name === 'revenue' ? fmt(v) : v, name === 'revenue' ? 'Revenue' : 'Orders']}
           />
           <Legend wrapperStyle={{ fontSize: '12px' }} />
           <Area yAxisId="rev" type="monotone" dataKey="revenue" stroke="#6366f1" fill="url(#gradRev)" strokeWidth={2} name="revenue" dot={false} />
@@ -130,7 +130,7 @@ function CategoryRevenueChart({ data }: { data: CategoryRevenue[] }) {
           <YAxis dataKey="category" type="category" tick={{ fontSize: 11, fill: '#94a3b8' }} width={90} />
           <Tooltip
             contentStyle={{ background: '#1e1e2e', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', fontSize: '12px' }}
-            formatter={(v: number) => [fmt(v), 'Revenue']}
+            formatter={(v: any) => [fmt(v), 'Revenue']}
           />
           <Bar dataKey="revenue" radius={[0, 6, 6, 0]} maxBarSize={24}>
             {data.map((_, i) => <Cell key={i} fill={PALETTE[i % PALETTE.length]} />)}
@@ -153,7 +153,7 @@ function OrderStatusPie({ data }: { data: OrderStatusBreakdown[] }) {
           </Pie>
           <Tooltip
             contentStyle={{ background: '#1e1e2e', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', fontSize: '12px' }}
-            formatter={(v: number, name: string) => [`${v} (${((v / total) * 100).toFixed(1)}%)`, name]}
+            formatter={(v: any, name: any) => [`${v} (${((v / total) * 100).toFixed(1)}%)`, name]}
           />
           <Legend wrapperStyle={{ fontSize: '11px' }} />
         </PieChart>
